@@ -124,7 +124,7 @@
             height: 74px;
             width: 31px;
             display:inline-block;
-            padding: 0 0 0 0px;
+            padding: 0 0 0 0;
         }
 
         .button{
@@ -137,27 +137,15 @@
         }
         .centerBTN
         {
-            /*
-            width: 31px;
-            height: 21px;
-            margin: auto;
-            */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100%;
         }
+
         .button:active {
             background:url(img/button.png) -31px 0 no-repeat;
         }
-
-        span.no_selection {
-            -webkit-user-select: none; /* webkit (safari, chrome) browsers */
-            -moz-user-select: none; /* mozilla browsers */
-            -khtml-user-select: none; /* webkit (konqueror) browsers */
-            -ms-user-select: none; /* IE10+ */
-        }
-
     </style>
 </head>
 
@@ -563,10 +551,10 @@
                     break;
                 case 2:
                     txt = '2 SUB';
-                    break
+                    break;
                 case 14:
                     txt = 'E OUT';
-                    break
+                    break;
                 case 15:
                     txt = 'F HLT';
                     break;
