@@ -606,10 +606,18 @@ var alu = {
             }
             else
             {
-
                 alu.alureg = rega + regb;
             }
 
+            // Make sure we swing back around
+            if(alu.alureg > 255)
+            {
+                alu.alureg = alu.alureg - 256;
+            }
+            else if(alu.alureg < 0)
+            {
+                alu.alureg = 255 - (alu.alureg + 1);
+            }
             // Wait 1 ms to make sure alureg is set
             if(Eu)
             {
