@@ -1,0 +1,689 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>SAP-1 CPU</title>
+    <meta name="description" content="SAP-1 CPU in Javascript">
+    <meta name="author" content="EllisGL">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="js/helpers.js"></script>
+    <script src="js/eventemitter.js"></script>
+    <script src="js/cpu.js"></script>
+    <style>
+        body{
+            /* Prevent the double click highlight issue */
+            -webkit-user-select: none; /* Chrome/Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+ */
+
+            /* Not implemented yet */
+            -o-user-select: none;
+            user-select: none;
+        }
+
+        @font-face {
+            font-family: 'dseg7_classic_minilight';
+            src: url('fonts/dseg7classicmini-light-webfont.eot');
+            src: url('fonts/dseg7classicmini-light-webfont.eot?#iefix') format('embedded-opentype'),
+            url('fonts/dseg7classicmini-light-webfont.woff2') format('woff2'),
+            url('fonts/dseg7classicmini-light-webfont.woff') format('woff'),
+            url('fonts/dseg7classicmini-light-webfont.ttf') format('truetype'),
+            url('fonts/dseg7classicmini-light-webfont.svg#dseg7_classic_minilight') format('svg');
+            font-weight: normal;
+            font-style: normal;
+
+        }
+
+        @font-face {
+            font-family: 'impact_labelregular';
+            src: url('fonts/Impact_Label-webfont.eot');
+            src: url('fonts/Impact_Label-webfont.eot?#iefix') format('embedded-opentype'),
+            url('fonts/Impact_Label-webfont.woff') format('woff'),
+            url('fonts/Impact_Label-webfont.ttf') format('truetype'),
+            url('fonts/Impact_Label-webfont.svg#impact_labelregular') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .tapeText {
+            font-family: 'impact_labelregular', Arial, sans-serif;
+            color: #000;
+            font-size: 32px;
+        }
+
+        .blankLabel {
+            height: 40px;
+        }
+
+        .numLabel {
+            width: 35px;
+            float: left;
+        }
+
+        .segText
+        {
+            font-family :'dseg7_classic_minilight', Arial, sans-serif;
+            color: red;
+            font-size: 52px;
+            width: 40px;
+            float: left;
+        }
+
+        .clear {
+            clear : both;
+        }
+
+        .ledOff, .ledRed, .ledGreen
+        {
+            width: 31px;
+            height: 31px;
+            margin: 2px;
+        }
+
+        .ledOff {
+            background: url(img/leds2.png) 0 0 no-repeat;;
+        }
+
+        .ledRed {
+            background: url(img/leds2.png) -31px 0 no-repeat;;
+        }
+
+        .bRowCell {
+            width: 100px;
+            float: left;
+            text-align: center;
+        }
+
+        .bRowMO{
+            /**
+            height:29px;
+            width:52px;
+            **/
+        }
+        .bRowMI {
+            width: 31px;
+            height: 78px;
+            margin: auto;
+        }
+
+        .switch {
+            display:none;
+        }
+
+        .switch + label{
+            background: url(img/switches2.png) 0 0 no-repeat;
+            height: 74px;
+            width: 31px;
+            display:inline-block;
+            padding: 0 0 0 0;
+        }
+
+        .switch:checked + label{
+            background:url('img/switches2.png') -31px 0 no-repeat;
+            height: 74px;
+            width: 31px;
+            display:inline-block;
+            padding: 0 0 0 0px;
+        }
+
+        .button{
+            background:url(img/button.png) 0 0 no-repeat;
+            cursor:pointer;
+            border:none;
+            width:31px;
+            height:23px;
+
+        }
+        .centerBTN
+        {
+            /*
+            width: 31px;
+            height: 21px;
+            margin: auto;
+            */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .button:active {
+            background:url(img/button.png) -31px 0 no-repeat;
+        }
+
+        span.no_selection {
+            -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+            -moz-user-select: none; /* mozilla browsers */
+            -khtml-user-select: none; /* webkit (konqueror) browsers */
+            -ms-user-select: none; /* IE10+ */
+        }
+
+    </style>
+</head>
+
+<body>
+    <div style="width: 630px; float: left;">
+        <div style="width: 600px; background-color: #BBB; padding: 10px; border: 5px solid black;">
+            <div class="tapeText">SAP-1</div>
+            <div>
+                <div style="width:140px; margin:0 10px; float: left;">
+                    <div>
+                        <div class="blankLabel">&nbsp;</div>
+                        <div style="text-align: center;" class="tapeText">ADDR</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div id="addr3" class="ledOff" style="float:left;"></div>
+                        <div id="addr2" class="ledOff" style="float:left;"></div>
+                        <div id="addr1" class="ledOff" style="float:left;"></div>
+                        <div id="addr0" class="ledOff" style="float:left;"></div>
+                        <div class="clear"></div>
+                    </div>
+                    <div style="text-align: center;" >
+                        <div class="tapeText numLabel">3</div>
+                        <div class="tapeText numLabel">2</div>
+                        <div class="tapeText numLabel">1</div>
+                        <div class="tapeText numLabel">0</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div style="text-align:center;">
+                        <input type="checkbox" class="switch" name="A3" id="A3">
+                        <label for="A3"></label>
+                        <input type="checkbox" class="switch" name="A2" id="A2">
+                        <label for="A2"></label>
+                        <input type="checkbox" class="switch" name="A1" id="A1">
+                        <label for="A1"></label>
+                        <input type="checkbox" class="switch" name="A0" id="A0">
+                        <label for="A0"></label>
+                    </div>
+                </div>
+
+                <div style="width:282px; margin:0 10px; float: left;">
+                    <div>
+                        <div style="text-align: center;" class="tapeText">DATA</div>
+                        <div style="text-align: center;" class="tapeText">OPCODE OPERAND</div>
+                    </div>
+                    <div>
+                        <div id="data7" class="ledOff" style="float:left;"></div>
+                        <div id="data6" class="ledOff" style="float:left;"></div>
+                        <div id="data5" class="ledOff" style="float:left;"></div>
+                        <div id="data4" class="ledOff" style="float:left;"></div>
+                        <div id="data3" class="ledOff" style="float:left;"></div>
+                        <div id="data2" class="ledOff" style="float:left;"></div>
+                        <div id="data1" class="ledOff" style="float:left;"></div>
+                        <div id="data0" class="ledOff" style="float:left;"></div>
+                        <div class="clear"></div>
+
+                        <div style="text-align: center;">
+                            <div class="tapeText numLabel">7</div>
+                            <div class="tapeText numLabel">6</div>
+                            <div class="tapeText numLabel">5</div>
+                            <div class="tapeText numLabel">4</div>
+                            <div class="tapeText numLabel">3</div>
+                            <div class="tapeText numLabel">2</div>
+                            <div class="tapeText numLabel">1</div>
+                            <div class="tapeText numLabel">0</div>
+                            <div class="clear"></div>
+                        </div>
+                        <div style="text-align:center;">
+                            <input type="checkbox" class="switch" name="D7" id="D7">
+                            <label for="D7"></label>
+                            <input type="checkbox" class="switch" name="D6" id="D6">
+                            <label for="D6"></label>
+                            <input type="checkbox" class="switch" name="D5" id="D5">
+                            <label for="D5"></label>
+                            <input type="checkbox" class="switch" name="D4" id="D4">
+                            <label for="D4"></label>
+                            <input type="checkbox" class="switch" name="D3" id="D3">
+                            <label for="D3"></label>
+                            <input type="checkbox" class="switch" name="D2" id="D2">
+                            <label for="D2"></label>
+                            <input type="checkbox" class="switch" name="D1" id="D1">
+                            <label for="D1"></label>
+                            <input type="checkbox" class="switch" name="D0" id="D0">
+                            <label for="D0"></label>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:116px; margin:0 10px; float: left;">
+                    <div>
+                        <div class="blankLabel">&nbsp;</div>
+                        <div style="text-align: center;" class="tapeText">OUTPUT</div>
+                    </div>
+                    <div style="text-align: center; background: url(img/7segback.png) no-repeat; height:57px; margin: 0 0 0 13px; padding:7px 0 0 3px;">
+                        <div class="segText" id="an1">0</div>
+                        <div class="segText" id="an0">0</div>
+                        <div class="clear"></div>
+                    </div>
+
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div>
+                <div>
+                    <div class="bRowCell">
+                        <div class="tapeText">
+                            RUN
+                        </div>
+                        <div class="bRowMO">
+                            <div class="bRowMI">
+                                <input type="checkbox" class="switch" name="run" id="run">
+                                <label for="run"></label>
+                            </div>
+                        </div>
+                        <div class="tapeText" style="text-align: center;">
+                            PROG
+                        </div>
+                    </div>
+
+                    <div class="bRowCell">
+                        <div class="blankLabel">
+                            &nbsp;
+                        </div>
+                        <div>
+                            <div class="bRowMI">
+                                <div class="centerBTN">
+                                    <button type="button" class="button" id="load"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tapeText">
+                            LOAD
+                        </div>
+                    </div>
+                    <div class="bRowCell">
+                        <div class="tapeText">
+                            AUTO
+                        </div>
+                        <div>
+                            <div class="bRowMI">
+                                <input type="checkbox" class="switch" name="auto" id="auto">
+                                <label for="auto"></label>
+                            </div>
+                        </div>
+                        <div class="tapeText">
+                            MAN
+                        </div>
+                    </div>
+
+                    <div class="bRowCell">
+                        <div class="blankLabel">
+                            &nbsp;
+                        </div>
+                        <div>
+                            <div class="bRowMI">
+                                <div class="bRowMI">
+                                    <div class="centerBTN">
+                                        <button type="button" class="button" id="step"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tapeText">
+                            STEP
+                        </div>
+                    </div>
+
+                    <div class="bRowCell">
+                        <div class="blankLabel">
+                            &nbsp;
+                        </div>
+                        <div>
+                            <div class="bRowMI">
+                                <div class="centerBTN">
+                                    <button type="button" class="button" id="clear"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tapeText">
+                            CLR
+                        </div>
+                    </div>
+
+                    <div class="bRowCell">
+                        <div class="blankLabel">
+                            &nbsp;
+                        </div>
+                        <div>
+                            <div class="bRowMI">
+                                <div class="centerBTN">
+                                    <button type="button" class="button" id="start"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tapeText">
+                            GO
+                        </div>
+                    </div>
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding-top: 5px;">
+            DEBUG:<br>
+            State: <span id="state">1</span> PC: <span id="PC">00</span> OPCODE: <span id="OPCODE">???</span> REGA: <span id="rega">00</span> REGB: <span id="regb">00</span><br>
+            RAM:
+            <span id="RAM00">00</span>
+            <span id="RAM01">00</span>
+            <span id="RAM02">00</span>
+            <span id="RAM03">00</span>
+            <span id="RAM04">00</span>
+            <span id="RAM05">00</span>
+            <span id="RAM06">00</span>
+            <span id="RAM07">00</span>
+            <span id="RAM08">00</span>
+            <span id="RAM09">00</span>
+            <span id="RAM10">00</span>
+            <span id="RAM11">00</span>
+            <span id="RAM12">00</span>
+            <span id="RAM13">00</span>
+            <span id="RAM14">00</span>
+            <span id="RAM15">00</span>
+        </div>
+    </div>
+
+    <div style="float: left; margin-left: 5px; width: 300px; border: 1px solid black;">
+        <div>
+            <table width="100%">
+                <caption>Programming Guide</caption>
+                <thead>
+                    <tr>
+                        <th>Opcode</th>
+                        <th>Mnemonic</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0000</td>
+                        <td>LDA</td>
+                        <td>Load data from RAM address to the Accumulator (REG A).</td>
+                    </tr>
+
+                    <tr>
+                        <td>0001</td>
+                        <td>ADD</td>
+                        <td>Add Accumulator to data from RAM address. </td>
+                    </tr>
+
+                    <tr>
+                        <td>0010</td>
+                        <td>SUB</td>
+                        <td>Subtract data from RAM address from the Accumulator . </td>
+                    </tr>
+
+                    <tr>
+                        <td>1110</td>
+                        <td>OUT</td>
+                        <td>Output data in Accumulator to the display</td>
+                    </tr>
+
+                    <tr>
+                        <td>1111</td>
+                        <td>HLT</td>
+                        <td>Halt all operations.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="padding-top: 7px;">
+            <table width="100%">
+                <caption>Sample Program (1 + 2)</caption>
+                <thead>
+                    <tr>
+                        <th>ADDR</th>
+                        <th>DATA</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0000</td>
+                        <td>0000 1010</td>
+                        <td>LDA 1010</td>
+                    </tr>
+
+                    <tr>
+                        <td>0001</td>
+                        <td>0001 1011</td>
+                        <td>ADD 1011</td>
+                    </tr>
+
+                    <tr>
+                        <td>0010</td>
+                        <td>1110 0000</td>
+                        <td>OUT</td>
+                    </tr>
+
+                    <tr>
+                        <td>0011</td>
+                        <td>1111 0000</td>
+                        <td>HLT</td>
+                    </tr>
+
+                    <tr>
+                        <td>1010</td>
+                        <td>0000 0001</td>
+                        <td>DATA: 1</td>
+                    </tr>
+
+                    <tr>
+                        <td>1011</td>
+                        <td>0000 0010</td>
+                        <td>DATA: 2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="clear"></div>
+
+    <script>
+        // Using events instead of 'Object.observe'.
+        // This way should be 'faster' and work 100% of the time.
+        var ee = new EventEmitter();
+
+        function startedEvent()
+        {
+            //$('#start').text('STOP');
+        }
+
+        function stoppedEvent()
+        {
+            //$('#start').text('START');
+        }
+
+        function outputEvent()
+        {
+            setTimeout(function()
+            {
+                var outbin = dec2bin(OBUS, 8);
+                $('#an0').text(bin2hex([outbin[4], outbin[5], outbin[6], outbin[7]]));
+                $('#an1').text(bin2hex([outbin[0], outbin[1], outbin[2], outbin[3]]));
+            }, 1)
+        }
+
+        function updateStateEvent()
+        {
+            $("#state").text(getNumBits(cu.state));
+        }
+
+        function updateADDRevent()
+        {
+            // Wait 1 ms to make sure WBUS is set.
+            setTimeout(function()
+            {
+                var b = dec2bin(ramaddr, 4);
+
+                $('#addr0').attr('class', (b[3]) ? 'ledRed' : 'ledOff');
+                $('#addr1').attr('class', (b[2]) ? 'ledRed' : 'ledOff');
+                $('#addr2').attr('class', (b[1]) ? 'ledRed' : 'ledOff');
+                $('#addr3').attr('class', (b[0]) ? 'ledRed' : 'ledOff');
+            }, 1);
+        }
+
+        function updateWBUSevent()
+        {
+            // Wait 1 ms to make sure WBUS is set.
+            setTimeout(function()
+            {
+                var b = dec2bin(WBUS, 8);
+
+                $('#data0').attr('class', (b[7]) ? 'ledRed' : 'ledOff');
+                $('#data1').attr('class', (b[6]) ? 'ledRed' : 'ledOff');
+                $('#data2').attr('class', (b[5]) ? 'ledRed' : 'ledOff');
+                $('#data3').attr('class', (b[4]) ? 'ledRed' : 'ledOff');
+                $('#data4').attr('class', (b[3]) ? 'ledRed' : 'ledOff');
+                $('#data5').attr('class', (b[2]) ? 'ledRed' : 'ledOff');
+                $('#data6').attr('class', (b[1]) ? 'ledRed' : 'ledOff');
+                $('#data7').attr('class', (b[0]) ? 'ledRed' : 'ledOff');
+            }, 1);
+        }
+
+        function updatePCevent()
+        {
+            $("#PC").text(padLeft(pc.cnt, 2));
+        }
+
+        function updateOPCODEevent()
+        {
+            var txt;
+
+            switch(opcode)
+            {
+                case 0:
+                    txt = '0 LDA';
+                    break;
+                case 1:
+                    txt = '1 ADD';
+                    break;
+                case 2:
+                    txt = '2 SUB';
+                    break
+                case 14:
+                    txt = 'E OUT';
+                    break
+                case 15:
+                    txt = 'F HLT';
+                    break;
+                default:
+                    txt = opcode.toString(16) + ' ???';
+            }
+
+            $("#OPCODE").text(txt);
+        }
+
+        function updateREGAevent()
+        {
+            $("#rega").text(padLeft(rega.toString(16), 2));
+        }
+
+        function updateREGBevent()
+        {
+            $("#rega").text(padLeft(regb.toString(16), 2));
+        }
+
+        function updateRAMevent()
+        {
+            $("#RAM00").text(padLeft(ram.memory[0].toString(16), 2));
+            $("#RAM01").text(padLeft(ram.memory[1].toString(16), 2));
+            $("#RAM02").text(padLeft(ram.memory[2].toString(16), 2));
+            $("#RAM03").text(padLeft(ram.memory[3].toString(16), 2));
+            $("#RAM04").text(padLeft(ram.memory[4].toString(16), 2));
+            $("#RAM05").text(padLeft(ram.memory[5].toString(16), 2));
+            $("#RAM06").text(padLeft(ram.memory[6].toString(16), 2));
+            $("#RAM07").text(padLeft(ram.memory[7].toString(16), 2));
+            $("#RAM08").text(padLeft(ram.memory[8].toString(16), 2));
+            $("#RAM09").text(padLeft(ram.memory[9].toString(16), 2));
+            $("#RAM10").text(padLeft(ram.memory[10].toString(16), 2));
+            $("#RAM11").text(padLeft(ram.memory[11].toString(16), 2));
+            $("#RAM12").text(padLeft(ram.memory[12].toString(16), 2));
+            $("#RAM13").text(padLeft(ram.memory[13].toString(16), 2));
+            $("#RAM14").text(padLeft(ram.memory[14].toString(16), 2));
+            $("#RAM15").text(padLeft(ram.memory[15].toString(16), 2));
+        }
+
+        $(document).ready(function()
+        {
+            //ee.addListeners('CLOCK', [CLOCKTEST, pc.CLKevent]);
+            ee.addListeners('CLK',    [cu.CLKEvent, pc.CLKevent, mar.CLKevent, ir.CLKevent, accumulator.CLKevent, registerb.CLKevent, outputreg.CLKevent]);
+            ee.addListeners('CLR',    [cu.CLRevent, pc.CLRevent, ir.CLRevent]);
+            ee.addListener('load',    inputreg.loadEvent);
+            ee.addListener('start',   inputreg.startEvent);
+            ee.addListener('started', startedEvent);
+            ee.addListener('stopped', stoppedEvent);
+            ee.addListener('nCE',     ram.nCEevent);
+            ee.addListener('ENmar',   mar.ENmarEvent);
+            ee.addListener('nWEram',  ram.nWEramEvent);
+            ee.addListener('ALU',     alu.ALUevent);
+            ee.addListener('run',     cu.runEvent);
+            ee.addListener('step',    inputreg.stepEvent);
+            ee.addListener('output',  outputEvent);
+
+            ee.addListener('updateState', updateStateEvent);
+            ee.addListener('updateADDR', updateADDRevent);
+            ee.addListener('updateWBUS', updateWBUSevent);
+            ee.addListener('updatePC', updatePCevent);
+            ee.addListener('updateOPCODE', updateOPCODEevent);
+            ee.addListener('updateREGA', updateREGAevent);
+            ee.addListener('updateREGB', updateREGBevent);
+            ee.addListener('updateRAM', updateRAMevent);
+
+            // Get this party started!
+            ee.emitEvent('run');
+            ee.emitEvent('updateRAM');
+
+            $('#load').click(function()
+            {
+                var a3 = $('#A3').prop('checked');
+                var a2 = $('#A2').prop('checked');
+                var a1 = $('#A1').prop('checked');
+                var a0 = $('#A0').prop('checked');
+                var d7 = $('#D7').prop('checked');
+                var d6 = $('#D6').prop('checked');
+                var d5 = $('#D5').prop('checked');
+                var d4 = $('#D4').prop('checked');
+                var d3 = $('#D3').prop('checked');
+                var d2 = $('#D2').prop('checked');
+                var d1 = $('#D1').prop('checked');
+                var d0 = $('#D0').prop('checked');
+
+                ee.emitEvent('load', [bin2dec([a3, a2, a1, a0]),  bin2dec([d7, d6, d5, d4, d3, d2, d1, d0])]);
+            });
+
+            $('#step').click(function()
+            {
+                inputreg.stepEvent();
+            });
+
+            $('#clear').click(function()
+            {
+                inputreg.clearEvent();
+            });
+
+            $('#run').change(function()
+            {
+                run = $(this).is(':checked');
+                ee.emitEvent('run');
+            });
+
+            $('#auto').change(function()
+            {
+                inputreg.auto = $(this).is(':checked');
+            });
+
+            $('#start').click(function()
+            {
+                ee.emitEvent('start');
+            });
+        });
+
+
+
+    </script>
+</body>
+</html>
