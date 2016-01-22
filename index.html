@@ -150,19 +150,15 @@
 </head>
 
 <body>
-<div id="header_wrap" class="outer">
-    <header class="inner">
-        <a id="forkme_banner" href="https://github.com/ellisgl/SAP-1-CPU">View on GitHub</a>
-
-        <h1 id="project_title">Sap-1-cpu</h1>
-        <h2 id="project_tagline">SAP-1 CPU / Computer in HTML and Javascript.</h2>
-
-        <section id="downloads">
-            <a class="zip_download_link" href="https://github.com/ellisgl/SAP-1-CPU/zipball/master">Download this project as a .zip file</a>
-            <a class="tar_download_link" href="https://github.com/ellisgl/SAP-1-CPU/tarball/master">Download this project as a tar.gz file</a>
-        </section>
-    </header>
-</div>
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+            <h1 id="project_title">SAP-1-CPU</h1>
+            <div>SAP-1 CPU / Computer in HTML and Javascript.<div>
+            <div>
+                <a href="https://github.com/ellisgl/SAP-1-CPU">View on GitHub</a> | <a href="https://github.com/ellisgl/SAP-1-CPU/zipball/master">ZIP file</a> | <a href="https://github.com/ellisgl/SAP-1-CPU/tarball/master">TAR.GZ file</a>
+            </div>
+        </header>
+    </div>
     <div style="width: 630px; float: left;">
         <div style="width: 600px; background-color: #BBB; padding: 10px; border: 5px solid black;">
             <div class="tapeText">SAP-1</div>
@@ -664,15 +660,6 @@
             $('#clear').click(function()
             {
                 inputreg.clearEvent();
-                updateWBUSevent();
-                updateADDRevent();
-                updateStateEvent();
-                updateOPCODEevent();
-                updatePCevent();
-                updateRAMevent();
-                updateREGAevent();
-                updateREGBevent();
-
             });
 
             $('#run').change(function()
@@ -691,6 +678,9 @@
                 ee.emitEvent('start');
             });
         });
+
+
+
     </script>
 </body>
 </html>
