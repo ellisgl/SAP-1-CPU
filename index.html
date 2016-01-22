@@ -7,9 +7,9 @@
     <meta name="description" content="SAP-1 CPU in Javascript">
     <meta name="author" content="EllisGL">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="js/helpers.js"></script>
-    <script src="js/eventemitter.js"></script>
-    <script src="js/cpu.js"></script>
+    <script src="https://raw.githubusercontent.com/ellisgl/SAP-1-CPU/master/js/helpers.js"></script>
+    <script src="https://github.com/ellisgl/SAP-1-CPU/raw/master/js/eventemitter.js"></script>
+    <script src="https://github.com/ellisgl/SAP-1-CPU/raw/master/js/cpu.js"></script>
     <style>
         body{
             /* Prevent the double click highlight issue */
@@ -21,15 +21,14 @@
             -o-user-select: none;
             user-select: none;
         }
-
         @font-face {
             font-family: 'dseg7_classic_minilight';
-            src: url('fonts/dseg7classicmini-light-webfont.eot');
-            src: url('fonts/dseg7classicmini-light-webfont.eot?#iefix') format('embedded-opentype'),
-            url('fonts/dseg7classicmini-light-webfont.woff2') format('woff2'),
-            url('fonts/dseg7classicmini-light-webfont.woff') format('woff'),
-            url('fonts/dseg7classicmini-light-webfont.ttf') format('truetype'),
-            url('fonts/dseg7classicmini-light-webfont.svg#dseg7_classic_minilight') format('svg');
+            src: url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/dseg7classicmini-light-webfont.eot?raw=true');
+            src: url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/dseg7classicmini-light-webfont.eot?#iefix&raw=true') format('embedded-opentype'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/dseg7classicmini-light-webfont.woff2?raw=true') format('woff2'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/dseg7classicmini-light-webfont.woff?raw=true') format('woff'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/dseg7classicmini-light-webfont.ttf?raw=true') format('truetype'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/dseg7classicmini-light-webfont.svg#dseg7_classic_minilight?raw=true') format('svg');
             font-weight: normal;
             font-style: normal;
 
@@ -37,11 +36,11 @@
 
         @font-face {
             font-family: 'impact_labelregular';
-            src: url('fonts/Impact_Label-webfont.eot');
-            src: url('fonts/Impact_Label-webfont.eot?#iefix') format('embedded-opentype'),
-            url('fonts/Impact_Label-webfont.woff') format('woff'),
-            url('fonts/Impact_Label-webfont.ttf') format('truetype'),
-            url('fonts/Impact_Label-webfont.svg#impact_labelregular') format('svg');
+            src: url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/Impact_Label-webfont.eot?raw=true');
+            src: url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/Impact_Label-webfont.eot?#iefix&raw=true') format('embedded-opentype'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/Impact_Label-webfont.woff?raw=true') format('woff'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/Impact_Label-webfont.ttf?raw=true') format('truetype'),
+            url('https://github.com/ellisgl/SAP-1-CPU/blob/master/fonts/Impact_Label-webfont.svg#impact_labelregular?raw=true') format('svg');
             font-weight: normal;
             font-style: normal;
         }
@@ -82,11 +81,11 @@
         }
 
         .ledOff {
-            background: url(img/leds2.png) 0 0 no-repeat;;
+            background: url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/leds2.png) 0 0 no-repeat;;
         }
 
         .ledRed {
-            background: url(img/leds2.png) -31px 0 no-repeat;;
+            background: url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/leds2.png) -31px 0 no-repeat;;
         }
 
         .bRowCell {
@@ -112,7 +111,7 @@
         }
 
         .switch + label{
-            background: url(img/switches2.png) 0 0 no-repeat;
+            background: url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/switches2.png) 0 0 no-repeat;
             height: 74px;
             width: 31px;
             display:inline-block;
@@ -120,7 +119,7 @@
         }
 
         .switch:checked + label{
-            background:url('img/switches2.png') -31px 0 no-repeat;
+            background:url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/switches2.png) -31px 0 no-repeat;
             height: 74px;
             width: 31px;
             display:inline-block;
@@ -128,7 +127,7 @@
         }
 
         .button{
-            background:url(img/button.png) 0 0 no-repeat;
+            background:url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/button.png) 0 0 no-repeat;
             cursor:pointer;
             border:none;
             width:31px;
@@ -144,7 +143,7 @@
         }
 
         .button:active {
-            background:url(img/button.png) -31px 0 no-repeat;
+            background:url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/button.png) -31px 0 no-repeat;
         }
     </style>
 </head>
@@ -248,7 +247,7 @@
                         <div class="blankLabel">&nbsp;</div>
                         <div style="text-align: center;" class="tapeText">OUTPUT</div>
                     </div>
-                    <div style="text-align: center; background: url(img/7segback.png) no-repeat; height:57px; margin: 0 0 0 13px; padding:7px 0 0 3px;">
+                    <div style="text-align: center; background: url(https://github.com/ellisgl/SAP-1-CPU/raw/master/img/7segback.png) no-repeat; height:57px; margin: 0 0 0 13px; padding:7px 0 0 3px;">
                         <div class="segText" id="an1">0</div>
                         <div class="segText" id="an0">0</div>
                         <div class="clear"></div>
