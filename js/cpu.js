@@ -48,12 +48,6 @@ function CLOCK()
 }
 
 /**
- function CLOCKTEST()
- {
-   console.log('CLK: ' +  CLK + ' nCLK: ' + nCLK);
- }
- **/
-/**
  * Takes the external input (web interface) and send it over the CPU
  */
 var inputreg = {
@@ -289,25 +283,21 @@ var cu = {
                             switch (opcode)
                             {
                                 case 0:
-                                    console.log('OPCODE: LDA (0000)');
                                     // LDA (Load in to Accumulator)
                                     nEi = 0;
                                     nLm = 0;
                                     break;
                                 case 1:
-                                    console.log('OPCODE: ADD (0001)');
                                     // ADD (Load data into Register B and preform addition)
                                     nEi = 0;
                                     nLm = 0;
                                     break;
                                 case 2:
-                                    console.log('OPCODE: SUB (0010)');
                                     // SUB (Load data into Register B and preform subtraction)
                                     nEi = 0;
                                     nLm = 0;
                                     break;
                                 case 14:
-                                    console.log('OPCODE: OUT (1110)');
                                     // OUT (Output to display)
                                     // Ouput Accumulator to WBUS
                                     // Load WBUS into Output Register
@@ -315,7 +305,6 @@ var cu = {
                                     nLo = 0;
                                     break;
                                 case 15:
-                                    console.log('OPCODE: HLT (0000)');
                                     // HLT (HALT! Stop everything!)
                                     nHLT = 0;
                                     break;
@@ -455,6 +444,7 @@ var ir = {
         {
             // Setup the OPCDOE with previous conversion
             opcode = ir.OPCODEreg;
+            ee.emit('updateOPCODE');
 
             // Wait 1 ms to make sure WBBUS is set from other areas
             setTimeout(function ()
@@ -612,13 +602,11 @@ var alu = {
         {
             if(Su)
             {
-                console.log('Subtracting ' + rega + ' from ' + regb);
                 alu.alureg = rega - regb;
             }
             else
             {
 
-                console.log('Adding ' + rega + ' to ' + regb);
                 alu.alureg = rega + regb;
             }
 
@@ -627,7 +615,6 @@ var alu = {
             {
                 setTimeout(function ()
                 {
-                    console.log('ALU EU ');
                     // Output to WBUS
                     WBUS = alu.alureg;
                 }, 1);
