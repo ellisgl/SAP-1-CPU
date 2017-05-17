@@ -51,14 +51,13 @@ function CLOCK()
  * Takes the external input (web interface) and send it over the CPU
  */
 var inputreg = {
-    auto      : 0,
-    start     : 0,
-    clkint    : 0,
-    addr      : 0,
-    data      : 0,
-    loadEvent : function (a, d)
-    {
-        if(enio)
+    auto: 0,
+    start: 0,
+    clkint: 0,
+    addr: 0,
+    data: 0,
+    loadEvent: function (a, d) {
+        if (enio)
         {
             // Load up the ABUS and WBUS
             ABUS = a;
@@ -71,36 +70,31 @@ var inputreg = {
 
             // Turn off Write Enable after a couple milliseconds.
             // Simulates depressing the button.
-            setTimeout(function ()
-            {
+            setTimeout(function () {
                 nWEram = 1;
             }, 10);
         }
     },
-    stepEvent : function ()
-    {
-        if(run && !inputreg.auto && nHLT)
+    stepEvent: function () {
+        if (run && !inputreg.auto && nHLT)
         {
             // Invert clock and emit the event
             CLOCK();
 
             // Trigger it again to comeback to opposite state.
             // Simulates depressing the button.
-            setTimeout(function ()
-            {
+            setTimeout(function () {
                 CLOCK();
             }, 10);
         }
     },
-    clearEvent: function ()
-    {
+    clearEvent: function () {
         CLR  = 1;
         nCLR = 0;
 
         ee.emitEvent('CLR');
 
-        setTimeout(function ()
-        {
+        setTimeout(function () {
             CLR  = 0;
             nCLR = 1;
 
@@ -108,17 +102,15 @@ var inputreg = {
         }, 10);
 
     },
-    startEvent: function ()
-    {
-        if(run && inputreg.auto && nHLT)
+    startEvent: function () {
+        if (run && inputreg.auto && nHLT)
         {
             inputreg.start = (inputreg.start) ? 0 : 1;
 
-            if(inputreg.start)
+            if (inputreg.start)
             {
                 // 1Hz clcok
-                inputreg.clkint = setInterval(function ()
-                {
+                inputreg.clkint = setInterval(function () {
                     CLOCK();
                 }, 500);
                 ee.emitEvent('started');
@@ -135,12 +127,11 @@ var inputreg = {
             }
         }
     },
-    CLKevent  : function ()
-    {
+    CLKevent: function () {
         // Stop the clock on halt.
-        if(!nHLT)
+        if (!nHLT)
         {
-            if(inputreg.clkint)
+            if (inputreg.clkint)
             {
                 clearInterval(inputreg.clkint);
             }
@@ -156,16 +147,15 @@ var inputreg = {
  * Control Unit - AKA the Boss of the CPU
  */
 var cu = {
-    T1      : 1,
-    T2      : 2,
-    T3      : 4,
-    T4      : 8,
-    T5      : 16,
-    T6      : 32,
-    state   : 1,
-    runEvent: function ()
-    {
-        if(!run)
+    T1: 1,
+    T2: 2,
+    T3: 4,
+    T4: 8,
+    T5: 16,
+    T6: 32,
+    state: 1,
+    runEvent: function () {
+        if (!run)
         {
             Cp       = 0;
             Ep       = 0;
@@ -190,9 +180,8 @@ var cu = {
             nWEram = 1;
         }
     },
-    CLRevent: function ()
-    {
-        if(!nCLR)
+    CLRevent: function () {
+        if (!nCLR)
         {
             CLK      = 0;
             Cp       = 0;
@@ -208,14 +197,20 @@ var cu = {
             Eu       = 0;
             nLo      = 1;
             nHLT     = 1;
+            ramaddr  = 0;
+            rega     = 0;
+            regb     = 0;
+            opcode   = 0;
+            WBUS     = 0;
+            ABUS     = 0;
+            OBUS     = 0;
             cu.state = cu.T1;
         }
     },
-    CLKEvent: function ()
-    {
-        if(CLK)
+    CLKEvent: function () {
+        if (CLK)
         {
-            if(run && nHLT)
+            if (run && nHLT)
             {
                 ee.emitEvent('updateState');
 
@@ -273,8 +268,7 @@ var cu = {
                         nLi = 1;
 
                         // Add delay to make sure things are set.
-                        setTimeout(function ()
-                        {
+                        setTimeout(function () {
                             // Start executing what IR decoded.
                             // OPCODES: 0000 - 0010(0-2)
                             // Load Instruction Register from WBUS
@@ -424,15 +418,13 @@ var cu = {
  */
 var ir = {
     OPCODEreg: 0,
-    ADDRreg  : 0,
-    WBUSreg  : [0, 0, 0, 0, 0, 0, 0, 0],
-    CLRevent : function ()
-    {
+    ADDRreg: 0,
+    WBUSreg: [0, 0, 0, 0, 0, 0, 0, 0],
+    CLRevent: function () {
         ir.opcodereg = 0;
     },
-    CLKevent : function ()
-    {
-        if(!nEi)
+    CLKevent: function () {
+        if (!nEi)
         {
             // nEi is not bound to CLK or !CLK, so output the address on request.
             var ADDRbin = dec2bin(ir.ADDRreg, 4);
@@ -440,19 +432,18 @@ var ir = {
             WBUS        = bin2dec(WBUStmp);
         }
 
-        if(CLK)
+        if (CLK)
         {
             // Setup the OPCDOE with previous conversion
             opcode = ir.OPCODEreg;
             ee.emit('updateOPCODE');
 
             // Wait 1 ms to make sure WBBUS is set from other areas
-            setTimeout(function ()
-            {
+            setTimeout(function () {
                 // Convert WBUS into binary
                 ir.WBUSreg = dec2bin(WBUS, 8);
 
-                if(!nLi)
+                if (!nLi)
                 {
                     // Loading IR from WBUS and splitting the data into OPCODE and ADDR
                     ir.OPCODEreg = bin2dec([ir.WBUSreg[0], ir.WBUSreg[1], ir.WBUSreg[2], ir.WBUSreg[3]]);
@@ -468,27 +459,25 @@ var ir = {
  * Program Counter - Just a counter that counts up and puts that count on the WBUS so the proper data from RAM can be output.
  */
 var pc = {
-    WBUSreg : [0, 0, 0, 0, 0, 0, 0, 0],
-    cnt     : 0,
-    CLRevent: function ()
-    {
+    WBUSreg: [0, 0, 0, 0, 0, 0, 0, 0],
+    cnt: 0,
+    CLRevent: function () {
         pc.cnt = 0;
     },
-    CLKevent: function ()
-    {
-        if(!nCLK)
+    CLKevent: function () {
+        if (!nCLK)
         {
-            if(Cp)
+            if (Cp)
             {
                 // Increment the PC
                 pc.cnt = (pc.cnt < 15) ? pc.cnt + 1 : 0;
                 ee.emitEvent('updatePC');
             }
-            else if(Ep)
+            else if (Ep)
             {
                 // Output the PC
                 // Convert WBUS into binary
-                ir.WBUSreg = dec2bin(WBUS, 8);
+                ir.WBUSreg  = dec2bin(WBUS, 8);
                 var ADDRbin = dec2bin(pc.cnt, 4);
                 WBUS        = bin2dec([ir.WBUSreg[0], ir.WBUSreg[1], ir.WBUSreg[2], ir.WBUSreg[3], ADDRbin[0], ADDRbin[1], ADDRbin[2], ADDRbin[3]]);
             }
@@ -500,24 +489,21 @@ var pc = {
  * Memory Address Register - Get the address from WBUS or ABUS and feeds it to RAM
  */
 var mar = {
-    ENmarEvent: function ()
-    {
-        if(ENmar)
+    ENmarEvent: function () {
+        if (ENmar)
         {
             ramaddr = ABUS;
             ee.emitEvent('updateADDR');
         }
     },
-    CLKevent  : function ()
-    {
+    CLKevent: function () {
         // Wait 1 ms to make sure WBUS and nLm is set
-        setTimeout(function ()
-        {
+        setTimeout(function () {
             // Load from lower 4 bits of WBUS
-            if(CLK && !nLm)
+            if (CLK && !nLm)
             {
-                var WBUStmp     = dec2bin(WBUS, 8);
-                ramaddr         = bin2dec([WBUStmp[4], WBUStmp[5], WBUStmp[6], WBUStmp[7]]);
+                var WBUStmp = dec2bin(WBUS, 8);
+                ramaddr     = bin2dec([WBUStmp[4], WBUStmp[5], WBUStmp[6], WBUStmp[7]]);
                 ee.emitEvent('updateADDR');
             }
         }, 1);
@@ -530,17 +516,14 @@ var mar = {
  */
 var ram = {
     //memory     : [10, 27, 224, 240, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0],
-    memory     : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    nCEevent   : function ()
-    {
+    memory: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    nCEevent: function () {
         // Output RAM to WBUS
         WBUS = ram.memory[ramaddr];
     },
-    nWEramEvent: function ()
-    {
+    nWEramEvent: function () {
         // Wait 1 ms to make sure WBUS and ADDR is set from other areas
-        setTimeout(function ()
-        {
+        setTimeout(function () {
             // Load RAM at address with WBUS
             ram.memory[ramaddr] = WBUS;
             ee.emitEvent('updateRAM');
@@ -554,15 +537,13 @@ var ram = {
  * Accumulator / Register A
  */
 var accumulator = {
-    CLKevent: function ()
-    {
+    CLKevent: function () {
         // Wait 1 ms to make sure WBUS is set from other areas
-        setTimeout(function ()
-        {
+        setTimeout(function () {
             // Output register to WBUS
             WBUS = (Ea) ? rega : WBUS;
 
-            if(!nLa)
+            if (!nLa)
             {
                 rega = WBUS;
                 ee.emitEvent('updateREGA');
@@ -575,13 +556,11 @@ var accumulator = {
  * Register B
  */
 var registerb = {
-    CLKevent: function ()
-    {
-        if(!nLb)
+    CLKevent: function () {
+        if (!nLb)
         {
             // Wait 1 ms to make sure WBBUS is set from other areas
-            setTimeout(function ()
-            {
+            setTimeout(function () {
                 regb = WBUS;
                 ee.emitEvent('updateREGB');
             }, 1);
@@ -594,13 +573,11 @@ var registerb = {
  * ALU - Arithmetic & Logic Unit. Well this only does basic Arithmetic (Add and Subtract)
  */
 var alu = {
-    alureg  : 0,
-    ALUevent: function ()
-    {
+    alureg: 0,
+    ALUevent: function () {
         // Wait 1 ms to make sure rega and regb are set
-        setTimeout(function ()
-        {
-            if(Su)
+        setTimeout(function () {
+            if (Su)
             {
                 alu.alureg = rega - regb;
             }
@@ -610,19 +587,18 @@ var alu = {
             }
 
             // Make sure we swing back around
-            if(alu.alureg > 255)
+            if (alu.alureg > 255)
             {
                 alu.alureg = alu.alureg - 256;
             }
-            else if(alu.alureg < 0)
+            else if (alu.alureg < 0)
             {
                 alu.alureg = 255 - (alu.alureg + 1);
             }
             // Wait 1 ms to make sure alureg is set
-            if(Eu)
+            if (Eu)
             {
-                setTimeout(function ()
-                {
+                setTimeout(function () {
                     // Output to WBUS
                     WBUS = alu.alureg;
                 }, 1);
@@ -635,12 +611,10 @@ var alu = {
  * Output Register - Sends date to the display
  */
 var outputreg = {
-    CLKevent: function ()
-    {
+    CLKevent: function () {
         // Wait 1 ms to make sure WBBUS is set from other areas
-        setTimeout(function ()
-        {
-            if(!nLo)
+        setTimeout(function () {
+            if (!nLo)
             {
                 OBUS = WBUS;
                 ee.emitEvent('output');
