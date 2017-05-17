@@ -651,6 +651,15 @@
             $('#clear').click(function()
             {
                 inputreg.clearEvent();
+                updateWBUSevent();
+                updateADDRevent();
+                updateStateEvent();
+                updateOPCODEevent();
+                updatePCevent();
+                updateRAMevent();
+                updateREGAevent();
+                updateREGBevent();
+
             });
 
             $('#run').change(function()
@@ -669,9 +678,6 @@
                 ee.emitEvent('start');
             });
         });
-
-
-
     </script>
 </body>
 </html>
