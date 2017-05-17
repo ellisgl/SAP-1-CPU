@@ -183,28 +183,29 @@ var cu = {
     CLRevent: function () {
         if (!nCLR)
         {
-            CLK      = 0;
-            Cp       = 0;
-            Ep       = 0;
-            nLm      = 1;
-            nLb      = 1;
-            nCE      = 1;
-            nLi      = 1;
-            nEi      = 1;
-            Ea       = 0;
-            nLa      = 1;
-            Su       = 0;
-            Eu       = 0;
-            nLo      = 1;
-            nHLT     = 1;
-            ramaddr  = 0;
-            rega     = 0;
-            regb     = 0;
-            opcode   = 0;
-            WBUS     = 0;
-            ABUS     = 0;
-            OBUS     = 0;
-            cu.state = cu.T1;
+            CLK        = 0;
+            Cp         = 0;
+            Ep         = 0;
+            nLm        = 1;
+            nLb        = 1;
+            nCE        = 1;
+            nLi        = 1;
+            nEi        = 1;
+            Ea         = 0;
+            nLa        = 1;
+            Su         = 0;
+            Eu         = 0;
+            nLo        = 1;
+            nHLT       = 1;
+            ramaddr    = 0;
+            rega       = 0;
+            regb       = 0;
+            opcode     = 0;
+            WBUS       = 0;
+            ABUS       = 0;
+            OBUS       = 0;
+            ram.memory = [0, 0, 0, 0, 0, 0, 0, 0];
+            cu.state   = cu.T1;
         }
     },
     CLKEvent: function () {
