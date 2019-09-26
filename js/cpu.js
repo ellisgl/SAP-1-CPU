@@ -104,7 +104,7 @@ const inputreg = {
             inputreg.start = (inputreg.start) ? 0 : 1;
 
             if (inputreg.start) {
-                // 1Hz clcok
+                // 1Hz clock.
                 inputreg.clkint = setInterval(function () {
                     CLOCK();
                 }, 500);
@@ -119,19 +119,7 @@ const inputreg = {
                 ee.emitEvent('stopped');
             }
         }
-    },
-    CLKevent: function () {
-        // Stop the clock on halt.
-        if (!nHLT) {
-            if (inputreg.clkint) {
-                clearInterval(inputreg.clkint);
-            }
-
-            CLK  = 0;
-            nCLK = 1;
-        }
     }
-
 };
 
 /**
