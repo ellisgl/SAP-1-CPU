@@ -597,7 +597,6 @@
 
         $(document).ready(function()
         {
-            //ee.addListeners('CLOCK', [CLOCKTEST, pc.CLKevent]);
             ee.addListeners('CLK',    [cu.CLKEvent, pc.CLKevent, mar.CLKevent, ir.CLKevent, accumulator.CLKevent, registerb.CLKevent, outputreg.CLKevent]);
             ee.addListeners('CLR',    [cu.CLRevent, pc.CLRevent, ir.CLRevent]);
             ee.addListener('load',    inputreg.loadEvent);
