@@ -1,8 +1,7 @@
 /**
  * Get the Number of bit need for a decimal number.
  */
-function getNumBits(dec)
-{
+function getNumBits(dec) {
     return Math.floor((Math.log(dec) / Math.log(2)) + 1);
 }
 
@@ -11,14 +10,12 @@ function getNumBits(dec)
  * @param   bin
  * @returns {number}
  */
-function bin2dec(bin)
-{
-    var p   = 1; // Places
-    var len = bin.length;
-    var dec = 0; // Return value
+function bin2dec(bin) {
+    let p   = 1; // Places
+    let len = bin.length;
+    let dec = 0; // Return value
 
-    for (var i = 0; i < len; i++)
-    {
+    for (let i = 0; i < len; i++) {
         dec = dec + bin.pop() * p;
         p   = p * 2;
     }
@@ -32,24 +29,19 @@ function bin2dec(bin)
  * @param bits
  * @returns {Array}
  */
-function dec2bin(dec, bits)
-{
+function dec2bin(dec, bits) {
     dec     = parseInt(dec);
-    var bin = dec.toString(2).split('');
+    let bin = dec.toString(2).split('');
 
-    for (var i = 0; i < bin.length; i++)
-    {
+    for (let i = 0; i < bin.length; i++) {
         bin[i] = parseInt(bin[i]);
     }
 
-    if(bits)
-    {
-        if(bin.length < bits)
-        {
-            var x = bits - bin.length;
+    if (bits) {
+        if (bin.length < bits) {
+            let x = bits - bin.length;
 
-            for (var j = 0; j < x; j++)
-            {
+            for (let j = 0; j < x; j++) {
                 bin.unshift(0);
             }
         }
@@ -58,9 +50,8 @@ function dec2bin(dec, bits)
     return bin
 }
 
-function bin2hex(bin)
-{
-    var dec = bin2dec(bin);
+function bin2hex(bin) {
+    let dec = bin2dec(bin);
     return dec.toString(16);
 }
 
@@ -70,6 +61,6 @@ function bin2hex(bin)
  * n is the number of places
  * str is what you want to have it padded with.
  */
-function padLeft(nr, n, str){
-    return Array(n-String(nr).length+1).join(str||'0')+nr;
+function padLeft(nr, n, str) {
+    return Array(n - String(nr).length + 1).join(str || '0') + nr;
 }

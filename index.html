@@ -6,7 +6,6 @@
     <title>SAP-1 CPU</title>
     <meta name="description" content="SAP-1 CPU in Javascript">
     <meta name="author" content="EllisGL">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="js/helpers.js"></script>
     <script src="js/eventemitter.js"></script>
     <script src="js/cpu.js"></script>
@@ -365,7 +364,11 @@
 
         <div style="padding-top: 5px;">
             DEBUG:<br>
-            State: <span id="state">1</span> PC: <span id="PC">00</span> OPCODE: <span id="OPCODE">???</span> REGA: <span id="rega">00</span> REGB: <span id="regb">00</span><br>
+            State: <span id="state">1</span>
+            PC: <span id="PC">00</span>
+            OPCODE: <span id="OPCODE">???</span>
+            REGA: <span id="rega">00</span>
+            REGB: <span id="regb">00</span><br>
             RAM:
             <span id="RAM00">00</span>
             <span id="RAM01">00</span>
@@ -488,74 +491,67 @@
         // This way should be 'faster' and work 100% of the time.
         var ee = new EventEmitter();
 
-        function startedEvent()
-        {
+        function startedEvent() {
             //$('#start').text('STOP');
         }
 
-        function stoppedEvent()
-        {
+        function stoppedEvent() {
             //$('#start').text('START');
         }
 
-        function outputEvent()
-        {
-            setTimeout(function()
-            {
-                var outbin = dec2bin(OBUS, 8);
-                $('#an0').text(bin2hex([outbin[4], outbin[5], outbin[6], outbin[7]]));
-                $('#an1').text(bin2hex([outbin[0], outbin[1], outbin[2], outbin[3]]));
+        function outputEvent() {
+            setTimeout(function () {
+                let outbin = dec2bin(OBUS, 8);
+
+                let an0 = document.getElementById('an0');
+                let an1 = document.getElementById('an1');
+
+                an0.innerText = bin2hex([outbin[4], outbin[5], outbin[6], outbin[7]]);
+                an1.innerText = bin2hex([outbin[0], outbin[1], outbin[2], outbin[3]]);
             }, 1)
         }
 
-        function updateStateEvent()
-        {
-            $("#state").text(getNumBits(cu.state));
+        function updateStateEvent() {
+            document.getElementById('state').innerText = getNumBits(cu.state);
         }
 
-        function updateADDRevent()
-        {
+        function updateADDRevent() {
             // Wait 1 ms to make sure WBUS is set.
-            setTimeout(function()
-            {
-                var b = dec2bin(ramaddr, 4);
+            setTimeout(function () {
+                let b = dec2bin(ramaddr, 4);
 
-                $('#addr0').attr('class', (b[3]) ? 'ledRed' : 'ledOff');
-                $('#addr1').attr('class', (b[2]) ? 'ledRed' : 'ledOff');
-                $('#addr2').attr('class', (b[1]) ? 'ledRed' : 'ledOff');
-                $('#addr3').attr('class', (b[0]) ? 'ledRed' : 'ledOff');
+                document.getElementById('addr0').setAttribute('class', b[3] ? 'ledRed' : 'ledOff');
+                document.getElementById('addr1').setAttribute('class', b[2] ? 'ledRed' : 'ledOff');
+                document.getElementById('addr2').setAttribute('class', b[1] ? 'ledRed' : 'ledOff');
+                document.getElementById('addr3').setAttribute('class', b[0] ? 'ledRed' : 'ledOff');
             }, 1);
         }
 
-        function updateWBUSevent()
-        {
+        function updateWBUSevent() {
             // Wait 1 ms to make sure WBUS is set.
-            setTimeout(function()
-            {
-                var b = dec2bin(WBUS, 8);
+            setTimeout(function () {
+                let b = dec2bin(WBUS, 8);
 
-                $('#data0').attr('class', (b[7]) ? 'ledRed' : 'ledOff');
-                $('#data1').attr('class', (b[6]) ? 'ledRed' : 'ledOff');
-                $('#data2').attr('class', (b[5]) ? 'ledRed' : 'ledOff');
-                $('#data3').attr('class', (b[4]) ? 'ledRed' : 'ledOff');
-                $('#data4').attr('class', (b[3]) ? 'ledRed' : 'ledOff');
-                $('#data5').attr('class', (b[2]) ? 'ledRed' : 'ledOff');
-                $('#data6').attr('class', (b[1]) ? 'ledRed' : 'ledOff');
-                $('#data7').attr('class', (b[0]) ? 'ledRed' : 'ledOff');
+                document.getElementById('data0').setAttribute('class', b[7] ? 'ledRed' : 'ledOff');
+                document.getElementById('data1').setAttribute('class', b[6] ? 'ledRed' : 'ledOff');
+                document.getElementById('data2').setAttribute('class', b[5] ? 'ledRed' : 'ledOff');
+                document.getElementById('data3').setAttribute('class', b[4] ? 'ledRed' : 'ledOff');
+                document.getElementById('data4').setAttribute('class', b[3] ? 'ledRed' : 'ledOff');
+                document.getElementById('data5').setAttribute('class', b[2] ? 'ledRed' : 'ledOff');
+                document.getElementById('data6').setAttribute('class', b[1] ? 'ledRed' : 'ledOff');
+                document.getElementById('data7').setAttribute('class', b[0] ? 'ledRed' : 'ledOff');
+
             }, 1);
         }
 
-        function updatePCevent()
-        {
-            $("#PC").text(padLeft(pc.cnt, 2));
+        function updatePCevent() {
+            document.getElementById('PC').innerText = padLeft(pc.cnt, 2);
         }
 
-        function updateOPCODEevent()
-        {
-            var txt;
+        function updateOPCODEevent() {
+            let txt;
 
-            switch(opcode)
-            {
+            switch (opcode) {
                 case 0:
                     txt = '0 LDA';
                     break;
@@ -575,55 +571,50 @@
                     txt = opcode.toString(16) + ' ???';
             }
 
-            $("#OPCODE").text(txt);
+            document.getElementById('OPCODE').innerText = txt;
         }
 
-        function updateREGAevent()
-        {
-            $("#rega").text(padLeft(rega.toString(16), 2));
+        function updateREGAevent() {
+            document.getElementById('rega').innerText = padLeft(rega.toString(16), 2);
         }
 
-        function updateREGBevent()
-        {
-            $("#regb").text(padLeft(regb.toString(16), 2));
+        function updateREGBevent() {
+            document.getElementById('regb').innerText = padLeft(regb.toString(16), 2);
         }
 
-        function updateRAMevent()
-        {
-            $("#RAM00").text(padLeft(ram.memory[0].toString(16), 2));
-            $("#RAM01").text(padLeft(ram.memory[1].toString(16), 2));
-            $("#RAM02").text(padLeft(ram.memory[2].toString(16), 2));
-            $("#RAM03").text(padLeft(ram.memory[3].toString(16), 2));
-            $("#RAM04").text(padLeft(ram.memory[4].toString(16), 2));
-            $("#RAM05").text(padLeft(ram.memory[5].toString(16), 2));
-            $("#RAM06").text(padLeft(ram.memory[6].toString(16), 2));
-            $("#RAM07").text(padLeft(ram.memory[7].toString(16), 2));
-            $("#RAM08").text(padLeft(ram.memory[8].toString(16), 2));
-            $("#RAM09").text(padLeft(ram.memory[9].toString(16), 2));
-            $("#RAM10").text(padLeft(ram.memory[10].toString(16), 2));
-            $("#RAM11").text(padLeft(ram.memory[11].toString(16), 2));
-            $("#RAM12").text(padLeft(ram.memory[12].toString(16), 2));
-            $("#RAM13").text(padLeft(ram.memory[13].toString(16), 2));
-            $("#RAM14").text(padLeft(ram.memory[14].toString(16), 2));
-            $("#RAM15").text(padLeft(ram.memory[15].toString(16), 2));
+        function updateRAMevent() {
+            document.getElementById('RAM00').innerText = padLeft(ram.memory[0].toString(16), 2);
+            document.getElementById('RAM01').innerText = padLeft(ram.memory[1].toString(16), 2);
+            document.getElementById('RAM02').innerText = padLeft(ram.memory[2].toString(16), 2);
+            document.getElementById('RAM03').innerText = padLeft(ram.memory[3].toString(16), 2);
+            document.getElementById('RAM04').innerText = padLeft(ram.memory[4].toString(16), 2);
+            document.getElementById('RAM05').innerText = padLeft(ram.memory[5].toString(16), 2);
+            document.getElementById('RAM06').innerText = padLeft(ram.memory[6].toString(16), 2);
+            document.getElementById('RAM07').innerText = padLeft(ram.memory[7].toString(16), 2);
+            document.getElementById('RAM08').innerText = padLeft(ram.memory[8].toString(16), 2);
+            document.getElementById('RAM09').innerText = padLeft(ram.memory[9].toString(16), 2);
+            document.getElementById('RAM10').innerText = padLeft(ram.memory[10].toString(16), 2);
+            document.getElementById('RAM11').innerText = padLeft(ram.memory[11].toString(16), 2);
+            document.getElementById('RAM12').innerText = padLeft(ram.memory[12].toString(16), 2);
+            document.getElementById('RAM13').innerText = padLeft(ram.memory[13].toString(16), 2);
+            document.getElementById('RAM14').innerText = padLeft(ram.memory[14].toString(16), 2);
+            document.getElementById('RAM15').innerText = padLeft(ram.memory[15].toString(16), 2);
         }
 
-        $(document).ready(function()
-        {
-            //ee.addListeners('CLOCK', [CLOCKTEST, pc.CLKevent]);
-            ee.addListeners('CLK',    [cu.CLKEvent, pc.CLKevent, mar.CLKevent, ir.CLKevent, accumulator.CLKevent, registerb.CLKevent, outputreg.CLKevent]);
-            ee.addListeners('CLR',    [cu.CLRevent, pc.CLRevent, ir.CLRevent]);
-            ee.addListener('load',    inputreg.loadEvent);
-            ee.addListener('start',   inputreg.startEvent);
+        (function () {
+            ee.addListeners('CLK', [cu.CLKEvent, pc.CLKevent, mar.CLKevent, ir.CLKevent, accumulator.CLKevent, registerb.CLKevent, outputreg.CLKevent]);
+            ee.addListeners('CLR', [cu.CLRevent, pc.CLRevent, ir.CLRevent]);
+            ee.addListener('load', inputreg.loadEvent);
+            ee.addListener('start', inputreg.startEvent);
             ee.addListener('started', startedEvent);
             ee.addListener('stopped', stoppedEvent);
-            ee.addListener('nCE',     ram.nCEevent);
-            ee.addListener('ENmar',   mar.ENmarEvent);
-            ee.addListener('nWEram',  ram.nWEramEvent);
-            ee.addListener('ALU',     alu.ALUevent);
-            ee.addListener('run',     cu.runEvent);
-            ee.addListener('step',    inputreg.stepEvent);
-            ee.addListener('output',  outputEvent);
+            ee.addListener('nCE', ram.nCEevent);
+            ee.addListener('ENmar', mar.ENmarEvent);
+            ee.addListener('nWEram', ram.nWEramEvent);
+            ee.addListener('ALU', alu.ALUevent);
+            ee.addListener('run', cu.runEvent);
+            ee.addListener('step', inputreg.stepEvent);
+            ee.addListener('output', outputEvent);
 
             ee.addListener('updateState', updateStateEvent);
             ee.addListener('updateADDR', updateADDRevent);
@@ -638,31 +629,29 @@
             ee.emitEvent('run');
             ee.emitEvent('updateRAM');
 
-            $('#load').click(function()
-            {
-                var a3 = $('#A3').prop('checked');
-                var a2 = $('#A2').prop('checked');
-                var a1 = $('#A1').prop('checked');
-                var a0 = $('#A0').prop('checked');
-                var d7 = $('#D7').prop('checked');
-                var d6 = $('#D6').prop('checked');
-                var d5 = $('#D5').prop('checked');
-                var d4 = $('#D4').prop('checked');
-                var d3 = $('#D3').prop('checked');
-                var d2 = $('#D2').prop('checked');
-                var d1 = $('#D1').prop('checked');
-                var d0 = $('#D0').prop('checked');
+            document.getElementById('load').addEventListener('click', function () {
+                let a3 = document.getElementById('A3').checked;
+                let a2 = document.getElementById('A2').checked;
+                let a1 = document.getElementById('A1').checked;
+                let a0 = document.getElementById('A0').checked;
 
-                ee.emitEvent('load', [bin2dec([a3, a2, a1, a0]),  bin2dec([d7, d6, d5, d4, d3, d2, d1, d0])]);
+                let d7 = document.getElementById('D7').checked;
+                let d6 = document.getElementById('D6').checked;
+                let d5 = document.getElementById('D5').checked;
+                let d4 = document.getElementById('D4').checked;
+                let d3 = document.getElementById('D3').checked;
+                let d2 = document.getElementById('D2').checked;
+                let d1 = document.getElementById('D1').checked;
+                let d0 = document.getElementById('D0').checked;
+
+                ee.emitEvent('load', [bin2dec([a3, a2, a1, a0]), bin2dec([d7, d6, d5, d4, d3, d2, d1, d0])]);
             });
 
-            $('#step').click(function()
-            {
+            document.getElementById('step').addEventListener('click', function () {
                 inputreg.stepEvent();
             });
 
-            $('#clear').click(function()
-            {
+            document.getElementById('clear').addEventListener('click', function () {
                 inputreg.clearEvent();
                 updateWBUSevent();
                 updateADDRevent();
@@ -672,25 +661,22 @@
                 updateRAMevent();
                 updateREGAevent();
                 updateREGBevent();
-
             });
 
-            $('#run').change(function()
-            {
-                run = $(this).is(':checked');
+            document.getElementById('run').addEventListener('change', function (e) {
+                run = e.target.checked;
                 ee.emitEvent('run');
             });
 
-            $('#auto').change(function()
-            {
-                inputreg.auto = $(this).is(':checked');
+            document.getElementById('auto').addEventListener('change', function (e) {
+                inputreg.auto = e.target.checked;
             });
 
-            $('#start').click(function()
-            {
+            document.getElementById('start').addEventListener('click', function () {
                 ee.emitEvent('start');
             });
-        });
+        })();
+
     </script>
 </body>
 </html>
