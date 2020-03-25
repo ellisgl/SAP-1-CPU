@@ -1,4 +1,4 @@
-/ Wonder if if I should put this in it's own object - ie cpu = {};
+// Wonder if if I should put this in it's own object - ie cpu = {};
 // Init our signals and buses
 let CLK    = 0;
 let nCLK   = 1;
