@@ -1,5 +1,7 @@
 /**
  * Get the Number of bit need for a decimal number.
+ * @param dec
+ * @returns {number}
  */
 function getNumBits(dec) {
     return Math.floor((Math.log(dec) / Math.log(2)) + 1);
@@ -50,6 +52,11 @@ function dec2bin(dec, bits) {
     return bin
 }
 
+/**
+ * Convert a binary number to hexadecimal
+ * @param bin
+ * @returns {string} 
+ */
 function bin2hex(bin) {
     let dec = bin2dec(bin);
     return dec.toString(16);
@@ -57,9 +64,10 @@ function bin2hex(bin) {
 
 /**
  * Pad Left.
- * nr is what you want to have padded
- * n is the number of places
- * str is what you want to have it padded with.
+ * @param  nr  - is what you want to have padded
+ * @param  n   - is the number of places
+ * @param  str - is what you want to have it padded with.
+ * @params string
  */
 function padLeft(nr, n, str) {
     return Array(n - String(nr).length + 1).join(str || '0') + nr;
