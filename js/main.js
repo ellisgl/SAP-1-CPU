@@ -56,7 +56,7 @@ function updateWBUSevent() {
 }
 
 function updatePCevent() {
-    document.getElementById('PC').innerText = padLeft(pc.cnt, 2);
+    document.getElementById('PC').innerText = String(pc.cnt).padStart(2, '0');
 }
 
 function updateOPCODEevent() {
@@ -86,30 +86,30 @@ function updateOPCODEevent() {
 }
 
 function updateREGAevent() {
-    document.getElementById('rega').innerText = padLeft(rega.toString(16), 2);
+    document.getElementById('rega').innerText = rega.toString(16).padStart(2, '0');
 }
 
 function updateREGBevent() {
-    document.getElementById('regb').innerText = padLeft(regb.toString(16), 2);
+    document.getElementById('regb').innerText = regb.toString(16).padStart(2, '0');
 }
 
 function updateRAMevent() {
-    document.getElementById('RAM00').innerText = padLeft(ram.memory[0].toString(16), 2);
-    document.getElementById('RAM01').innerText = padLeft(ram.memory[1].toString(16), 2);
-    document.getElementById('RAM02').innerText = padLeft(ram.memory[2].toString(16), 2);
-    document.getElementById('RAM03').innerText = padLeft(ram.memory[3].toString(16), 2);
-    document.getElementById('RAM04').innerText = padLeft(ram.memory[4].toString(16), 2);
-    document.getElementById('RAM05').innerText = padLeft(ram.memory[5].toString(16), 2);
-    document.getElementById('RAM06').innerText = padLeft(ram.memory[6].toString(16), 2);
-    document.getElementById('RAM07').innerText = padLeft(ram.memory[7].toString(16), 2);
-    document.getElementById('RAM08').innerText = padLeft(ram.memory[8].toString(16), 2);
-    document.getElementById('RAM09').innerText = padLeft(ram.memory[9].toString(16), 2);
-    document.getElementById('RAM10').innerText = padLeft(ram.memory[10].toString(16), 2);
-    document.getElementById('RAM11').innerText = padLeft(ram.memory[11].toString(16), 2);
-    document.getElementById('RAM12').innerText = padLeft(ram.memory[12].toString(16), 2);
-    document.getElementById('RAM13').innerText = padLeft(ram.memory[13].toString(16), 2);
-    document.getElementById('RAM14').innerText = padLeft(ram.memory[14].toString(16), 2);
-    document.getElementById('RAM15').innerText = padLeft(ram.memory[15].toString(16), 2);
+    document.getElementById('RAM00').innerText = ram.memory[0].toString(16).padStart(2, '0');
+    document.getElementById('RAM01').innerText = ram.memory[1].toString(16).padStart(2, '0');
+    document.getElementById('RAM02').innerText = ram.memory[2].toString(16).padStart(2, '0');
+    document.getElementById('RAM03').innerText = ram.memory[3].toString(16).padStart(2, '0');
+    document.getElementById('RAM04').innerText = ram.memory[4].toString(16).padStart(2, '0');
+    document.getElementById('RAM05').innerText = ram.memory[5].toString(16).padStart(2, '0');
+    document.getElementById('RAM06').innerText = ram.memory[6].toString(16).padStart(2, '0');
+    document.getElementById('RAM07').innerText = ram.memory[7].toString(16).padStart(2, '0');
+    document.getElementById('RAM08').innerText = ram.memory[8].toString(16).padStart(2, '0');
+    document.getElementById('RAM09').innerText = ram.memory[9].toString(16).padStart(2, '0');
+    document.getElementById('RAM10').innerText = ram.memory[10].toString(16).padStart(2, '0');
+    document.getElementById('RAM11').innerText = ram.memory[11].toString(16).padStart(2, '0');
+    document.getElementById('RAM12').innerText = ram.memory[12].toString(16).padStart(2, '0');
+    document.getElementById('RAM13').innerText = ram.memory[13].toString(16).padStart(2, '0');
+    document.getElementById('RAM14').innerText = ram.memory[14].toString(16).padStart(2, '0');
+    document.getElementById('RAM15').innerText = ram.memory[15].toString(16).padStart(2, '0');
 }
 
 (function () {

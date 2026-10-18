@@ -44,14 +44,3 @@ function bin2hex(bin) {
     let dec = bin2dec(bin);
     return dec.toString(16);
 }
-
-/**
- * Pad Left.
- * @param  nr  - is what you want to have padded
- * @param  n   - is the number of places
- * @param  str - is what you want to have it padded with.
- * @params string
- */
-function padLeft(nr, n, str) {
-    return Array(n - String(nr).length + 1).join(str || '0') + nr;
-}
