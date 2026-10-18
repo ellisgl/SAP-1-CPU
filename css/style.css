@@ -130,3 +130,26 @@ body {
 .button:active {
     background: url(../img/button.png) -31px 0 no-repeat;
 }
+/* GitHub corner, from https://github.com/tholman/github-corners (MIT) */
+.github-corner svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+    fill: #151513;
+    color: #fff;
+}
+
+.github-corner .octo-arm {
+    transform-origin: 130px 106px;
+}
+
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+    0%, 100% { transform: rotate(0); }
+    20%, 60% { transform: rotate(-25deg); }
+    40%, 80% { transform: rotate(10deg); }
+}
