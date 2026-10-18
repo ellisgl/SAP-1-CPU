@@ -1,6 +1,6 @@
 /**
  * Get the Number of bit need for a decimal number.
- * @param dec
+ * @param {number} dec
  * @returns {number}
  */
 function getNumBits(dec) {
@@ -9,7 +9,7 @@ function getNumBits(dec) {
 
 /**
  * Convert a binary (base-2) number to decimal (base-10)
- * @param   bin
+ * @param   {Array<number|boolean|string>} bin
  * @returns {number}
  */
 function bin2dec(bin) {
@@ -27,29 +27,12 @@ function bin2dec(bin) {
 
 /**
  * Convert a decimal (base-10) to binary (base-2) (Array format)
- * @param dec
- * @param bits
- * @returns {Array}
+ * @param   {number} dec
+ * @param   {number} [bits] - Minimum number of bits; pads with leading zeros
+ * @returns {number[]}
  */
 function dec2bin(dec, bits) {
-    dec     = parseInt(dec);
-    let bin = dec.toString(2).split('');
-
-    for (let i = 0; i < bin.length; i++) {
-        bin[i] = parseInt(bin[i]);
-    }
-
-    if (bits) {
-        if (bin.length < bits) {
-            let x = bits - bin.length;
-
-            for (let j = 0; j < x; j++) {
-                bin.unshift(0);
-            }
-        }
-    }
-
-    return bin
+    return Math.trunc(dec).toString(2).padStart(bits || 0, '0').split('').map(Number);
 }
 
 /**
@@ -60,15 +43,4 @@ function dec2bin(dec, bits) {
 function bin2hex(bin) {
     let dec = bin2dec(bin);
     return dec.toString(16);
-}
-
-/**
- * Pad Left.
- * @param  nr  - is what you want to have padded
- * @param  n   - is the number of places
- * @param  str - is what you want to have it padded with.
- * @params string
- */
-function padLeft(nr, n, str) {
-    return Array(n - String(nr).length + 1).join(str || '0') + nr;
 }
