@@ -1,6 +1,6 @@
 /**
  * Get the Number of bit need for a decimal number.
- * @param dec
+ * @param {number} dec
  * @returns {number}
  */
 function getNumBits(dec) {

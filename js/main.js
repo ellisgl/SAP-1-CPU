@@ -1,6 +1,6 @@
 // Using events instead of 'Object.observe'.
 // This way should be 'faster' and work 100% of the time.
-var ee = new EventEmitter();
+const ee = new EventEmitter();
 
 function startedEvent() {
     //$('#start').text('STOP');
@@ -12,18 +12,18 @@ function stoppedEvent() {
 
 function outputEvent() {
     setTimeout(function () {
-        let outbin = dec2bin(OBUS, 8);
+        let outBin = dec2bin(OBUS, 8);
 
         let an0 = document.getElementById('an0');
         let an1 = document.getElementById('an1');
 
-        an0.innerText = bin2hex([outbin[4], outbin[5], outbin[6], outbin[7]]);
-        an1.innerText = bin2hex([outbin[0], outbin[1], outbin[2], outbin[3]]);
+        an0.innerText = bin2hex([outBin[4], outBin[5], outBin[6], outBin[7]]);
+        an1.innerText = bin2hex([outBin[0], outBin[1], outBin[2], outBin[3]]);
     }, 1)
 }
 
 function updateStateEvent() {
-    document.getElementById('state').innerText = getNumBits(cu.state);
+    document.getElementById('state').innerText = String(getNumBits(cu.state));
 }
 
 function updateADDRevent() {

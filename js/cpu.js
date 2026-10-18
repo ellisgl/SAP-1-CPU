@@ -151,7 +151,6 @@ const cu = {
             enio     = 1;
             ENmar    = 1;
             cu.state = cu.T1;
-
         } else {
             nWEram = 1;
         }
