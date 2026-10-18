@@ -43,7 +43,7 @@ let OBUS = 0;
 function CLOCK() {
     CLK  = !CLK;
     nCLK = !nCLK;
-    ee.emitEvent('CLK')
+    ee.dispatchEvent(new Event('CLK'))
 }
 
 /**
@@ -63,8 +63,8 @@ const inputreg = {
 
             // Load to RAM (Write Enable)
             nWEram = 0;
-            ee.emitEvent('ENmar');  // Have to trigger MAR.
-            ee.emitEvent('nWEram'); // Emitting event to trigger ram 'class' to do it's thing.
+            ee.dispatchEvent(new Event('ENmar'));  // Have to trigger MAR.
+            ee.dispatchEvent(new Event('nWEram')); // Emitting event to trigger ram 'class' to do it's thing.
 
             // Turn off Write Enable after a couple milliseconds.
             // Simulates depressing the button.
@@ -89,13 +89,13 @@ const inputreg = {
         CLR  = 1;
         nCLR = 0;
 
-        ee.emitEvent('CLR');
+        ee.dispatchEvent(new Event('CLR'));
 
         setTimeout(function () {
             CLR  = 0;
             nCLR = 1;
 
-            ee.emitEvent('CLR');
+            ee.dispatchEvent(new Event('CLR'));
         }, 10);
 
     },
@@ -108,7 +108,7 @@ const inputreg = {
                 inputreg.clkint = setInterval(function () {
                     CLOCK();
                 }, 500);
-                ee.emitEvent('started');
+                ee.dispatchEvent(new Event('started'));
             } else {
                 // No more auto clocking
                 clearInterval(inputreg.clkint);
@@ -116,7 +116,7 @@ const inputreg = {
                 CLK  = 0;
                 nCLK = 1;
 
-                ee.emitEvent('stopped');
+                ee.dispatchEvent(new Event('stopped'));
             }
         }
     }
@@ -185,7 +185,7 @@ const cu = {
     CLKEvent: function () {
         if (CLK) {
             if (run && nHLT) {
-                ee.emitEvent('updateState');
+                ee.dispatchEvent(new Event('updateState'));
 
                 // We are in running mode.
                 // Combining T-State handler with the ring counter
@@ -205,7 +205,7 @@ const cu = {
 
                         // Update the ring counter to the next T-State
                         cu.state = cu.T2;
-                        ee.emitEvent('updateWBUS');
+                        ee.dispatchEvent(new Event('updateWBUS'));
                         break;
                     case cu.T2:
                         // Clear out previous T1 signals
@@ -217,7 +217,7 @@ const cu = {
 
                         // Update the ring counter to the next T-State
                         cu.state = cu.T3;
-                        ee.emitEvent('updateWBUS');
+                        ee.dispatchEvent(new Event('updateWBUS'));
                         break;
                     case cu.T3:
                         // Clear out previous T2 signals
@@ -228,11 +228,11 @@ const cu = {
                         nLi = 0;
 
                         // Have to emit event, since RAM is not clock driven
-                        ee.emitEvent('nCE');
+                        ee.dispatchEvent(new Event('nCE'));
 
                         // Update the ring counter to the next T-State
                         cu.state = cu.T4;
-                        ee.emitEvent('updateWBUS');
+                        ee.dispatchEvent(new Event('updateWBUS'));
                         break;
                     case cu.T4:
                         // Clear previous T3 signals
@@ -278,7 +278,7 @@ const cu = {
 
                             // Update the ring counter to the next T-State
                             cu.state = cu.T5;
-                            ee.emitEvent('updateWBUS');
+                            ee.dispatchEvent(new Event('updateWBUS'));
                         }, 1);
                         break;
                     case cu.T5:
@@ -296,7 +296,7 @@ const cu = {
                                 nCE = 0;
                                 nLa = 0;
 
-                                ee.emitEvent('nCE');
+                                ee.dispatchEvent(new Event('nCE'));
                                 break;
                             case 1:
                                 // ADD
@@ -305,7 +305,7 @@ const cu = {
                                 nCE = 0;
                                 nLb = 0;
 
-                                ee.emitEvent('nCE');
+                                ee.dispatchEvent(new Event('nCE'));
                                 break;
                             case 2:
                                 // SUB
@@ -314,7 +314,7 @@ const cu = {
                                 nCE = 0;
                                 nLb = 0;
 
-                                ee.emitEvent('nCE');
+                                ee.dispatchEvent(new Event('nCE'));
                                 break;
                             case 14:
                                 // OUT
@@ -327,7 +327,7 @@ const cu = {
 
                         // Update the ring counter to the next T-State
                         cu.state = cu.T6;
-                        ee.emitEvent('updateWBUS');
+                        ee.dispatchEvent(new Event('updateWBUS'));
                         break;
                     case cu.T6:
                         // Clear previous T5 signals
@@ -349,7 +349,7 @@ const cu = {
                                 nLa = 0;
 
                                 // Have to emit event, since ALU is not clock driven
-                                ee.emitEvent('ALU');
+                                ee.dispatchEvent(new Event('ALU'));
                                 break;
                             case 2:
                                 // SUB
@@ -361,7 +361,7 @@ const cu = {
                                 nLa = 0;
 
                                 // Have to emit event, since ALU is not clock driven
-                                ee.emitEvent('ALU');
+                                ee.dispatchEvent(new Event('ALU'));
                                 break;
                             case 14:
                                 // OUT
@@ -373,7 +373,7 @@ const cu = {
 
                         // Update the ring counter to the next T-State
                         cu.state = cu.T1;
-                        ee.emitEvent('updateWBUS');
+                        ee.dispatchEvent(new Event('updateWBUS'));
                         break;
                 }
             }
@@ -403,7 +403,7 @@ const ir = {
         if (CLK) {
             // Setup the OPCDOE with previous conversion
             opcode = ir.OPCODEreg;
-            ee.emit('updateOPCODE');
+            ee.dispatchEvent(new Event('updateOPCODE'));
 
             // Wait 1 ms to make sure WBBUS is set from other areas
             setTimeout(function () {
@@ -435,7 +435,7 @@ const pc = {
             if (Cp) {
                 // Increment the PC
                 pc.cnt = (pc.cnt < 15) ? pc.cnt + 1 : 0;
-                ee.emitEvent('updatePC');
+                ee.dispatchEvent(new Event('updatePC'));
             } else if (Ep) {
                 // Output the PC
                 // Convert WBUS into binary
@@ -454,7 +454,7 @@ const mar = {
     ENmarEvent: function () {
         if (ENmar) {
             ramaddr = ABUS;
-            ee.emitEvent('updateADDR');
+            ee.dispatchEvent(new Event('updateADDR'));
         }
     },
     CLKevent: function () {
@@ -464,7 +464,7 @@ const mar = {
             if (CLK && !nLm) {
                 let WBUStmp = dec2bin(WBUS, 8);
                 ramaddr     = bin2dec([WBUStmp[4], WBUStmp[5], WBUStmp[6], WBUStmp[7]]);
-                ee.emitEvent('updateADDR');
+                ee.dispatchEvent(new Event('updateADDR'));
             }
         }, 1);
     }
@@ -486,9 +486,9 @@ const ram = {
         setTimeout(function () {
             // Load RAM at address with WBUS
             ram.memory[ramaddr] = WBUS;
-            ee.emitEvent('updateRAM');
-            ee.emitEvent('updateWBUS');
-            ee.emitEvent('updateADDR');
+            ee.dispatchEvent(new Event('updateRAM'));
+            ee.dispatchEvent(new Event('updateWBUS'));
+            ee.dispatchEvent(new Event('updateADDR'));
         }, 1);
     }
 };
@@ -505,7 +505,7 @@ const accumulator = {
 
             if (!nLa) {
                 rega = WBUS;
-                ee.emitEvent('updateREGA');
+                ee.dispatchEvent(new Event('updateREGA'));
             }
         }, 1);
     }
@@ -520,7 +520,7 @@ const registerb = {
             // Wait 1 ms to make sure WBBUS is set from other areas
             setTimeout(function () {
                 regb = WBUS;
-                ee.emitEvent('updateREGB');
+                ee.dispatchEvent(new Event('updateREGB'));
             }, 1);
         }
 
@@ -567,7 +567,7 @@ const outputreg = {
         setTimeout(function () {
             if (!nLo) {
                 OBUS = WBUS;
-                ee.emitEvent('output');
+                ee.dispatchEvent(new Event('output'));
             }
         }, 1);
     }

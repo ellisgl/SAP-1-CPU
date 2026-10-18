@@ -1,6 +1,6 @@
 // Using events instead of 'Object.observe'.
 // This way should be 'faster' and work 100% of the time.
-const ee = new EventEmitter();
+const ee = new EventTarget();
 
 function startedEvent() {
     //$('#start').text('STOP');
@@ -113,32 +113,32 @@ function updateRAMevent() {
 }
 
 (function () {
-    ee.addListeners('CLK', [cu.CLKEvent, pc.CLKevent, mar.CLKevent, ir.CLKevent, accumulator.CLKevent, registerb.CLKevent, outputreg.CLKevent]);
-    ee.addListeners('CLR', [cu.CLRevent, pc.CLRevent, ir.CLRevent]);
-    ee.addListener('load', inputreg.loadEvent);
-    ee.addListener('start', inputreg.startEvent);
-    ee.addListener('started', startedEvent);
-    ee.addListener('stopped', stoppedEvent);
-    ee.addListener('nCE', ram.nCEevent);
-    ee.addListener('ENmar', mar.ENmarEvent);
-    ee.addListener('nWEram', ram.nWEramEvent);
-    ee.addListener('ALU', alu.ALUevent);
-    ee.addListener('run', cu.runEvent);
-    ee.addListener('step', inputreg.stepEvent);
-    ee.addListener('output', outputEvent);
+    [cu.CLKEvent, pc.CLKevent, mar.CLKevent, ir.CLKevent, accumulator.CLKevent, registerb.CLKevent, outputreg.CLKevent].forEach((fn) => ee.addEventListener('CLK', fn));
+    [cu.CLRevent, pc.CLRevent, ir.CLRevent].forEach((fn) => ee.addEventListener('CLR', fn));
+    ee.addEventListener('load', (e) => inputreg.loadEvent(...e.detail));
+    ee.addEventListener('start', inputreg.startEvent);
+    ee.addEventListener('started', startedEvent);
+    ee.addEventListener('stopped', stoppedEvent);
+    ee.addEventListener('nCE', ram.nCEevent);
+    ee.addEventListener('ENmar', mar.ENmarEvent);
+    ee.addEventListener('nWEram', ram.nWEramEvent);
+    ee.addEventListener('ALU', alu.ALUevent);
+    ee.addEventListener('run', cu.runEvent);
+    ee.addEventListener('step', inputreg.stepEvent);
+    ee.addEventListener('output', outputEvent);
 
-    ee.addListener('updateState', updateStateEvent);
-    ee.addListener('updateADDR', updateADDRevent);
-    ee.addListener('updateWBUS', updateWBUSevent);
-    ee.addListener('updatePC', updatePCevent);
-    ee.addListener('updateOPCODE', updateOPCODEevent);
-    ee.addListener('updateREGA', updateREGAevent);
-    ee.addListener('updateREGB', updateREGBevent);
-    ee.addListener('updateRAM', updateRAMevent);
+    ee.addEventListener('updateState', updateStateEvent);
+    ee.addEventListener('updateADDR', updateADDRevent);
+    ee.addEventListener('updateWBUS', updateWBUSevent);
+    ee.addEventListener('updatePC', updatePCevent);
+    ee.addEventListener('updateOPCODE', updateOPCODEevent);
+    ee.addEventListener('updateREGA', updateREGAevent);
+    ee.addEventListener('updateREGB', updateREGBevent);
+    ee.addEventListener('updateRAM', updateRAMevent);
 
     // Get this party started!
-    ee.emitEvent('run');
-    ee.emitEvent('updateRAM');
+    ee.dispatchEvent(new Event('run'));
+    ee.dispatchEvent(new Event('updateRAM'));
 
     document.getElementById('load').addEventListener('click', function () {
         let a3 = document.getElementById('A3').checked;
@@ -155,7 +155,7 @@ function updateRAMevent() {
         let d1 = document.getElementById('D1').checked;
         let d0 = document.getElementById('D0').checked;
 
-        ee.emitEvent('load', [bin2dec([a3, a2, a1, a0]), bin2dec([d7, d6, d5, d4, d3, d2, d1, d0])]);
+        ee.dispatchEvent(new CustomEvent('load', { detail: [bin2dec([a3, a2, a1, a0]), bin2dec([d7, d6, d5, d4, d3, d2, d1, d0])] }));
     });
 
     document.getElementById('step').addEventListener('click', function () {
@@ -176,7 +176,7 @@ function updateRAMevent() {
 
     document.getElementById('run').addEventListener('change', function (e) {
         run = e.target.checked;
-        ee.emitEvent('run');
+        ee.dispatchEvent(new Event('run'));
     });
 
     document.getElementById('auto').addEventListener('change', function (e) {
@@ -184,6 +184,6 @@ function updateRAMevent() {
     });
 
     document.getElementById('start').addEventListener('click', function () {
-        ee.emitEvent('start');
+        ee.dispatchEvent(new Event('start'));
     });
 })();
