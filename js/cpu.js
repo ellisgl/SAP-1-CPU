@@ -100,24 +100,29 @@ const inputreg = {
 
     },
     startEvent: function () {
-        if (run && inputreg.auto && nHLT) {
-            inputreg.start = (inputreg.start) ? 0 : 1;
+        if (inputreg.start) {
+            // Always allow stopping, even if the CPU has halted.
+            inputreg.stopClock();
+        } else if (run && inputreg.auto && nHLT) {
+            inputreg.start = 1;
 
-            if (inputreg.start) {
-                // 1Hz clock.
-                inputreg.clkint = setInterval(function () {
-                    CLOCK();
-                }, 500);
-                ee.dispatchEvent(new Event('started'));
-            } else {
-                // No more auto clocking
-                clearInterval(inputreg.clkint);
+            // 1Hz clock.
+            inputreg.clkint = setInterval(function () {
+                CLOCK();
+            }, 500);
+            ee.dispatchEvent(new Event('started'));
+        }
+    },
+    stopClock: function () {
+        if (inputreg.start) {
+            // No more auto clocking
+            inputreg.start = 0;
+            clearInterval(inputreg.clkint);
 
-                CLK  = 0;
-                nCLK = 1;
+            CLK  = 0;
+            nCLK = 1;
 
-                ee.dispatchEvent(new Event('stopped'));
-            }
+            ee.dispatchEvent(new Event('stopped'));
         }
     }
 };
@@ -272,6 +277,9 @@ const cu = {
                                 case 15:
                                     // HLT (HALT! Stop everything!)
                                     nHLT = 0;
+
+                                    // Halting stops the clock, like on the real SAP-1.
+                                    inputreg.stopClock();
                                     break;
 
                             }
