@@ -45,6 +45,20 @@ describe('program mode', () => {
         assert.equal(sim.get('cu.state'), sim.get('cu.T1'));
     });
 
+    it('CLR resets the instruction register', () => {
+        const sim = loadSimulator();
+
+        sim.enter(arithmetic(ADD, 1, 2));
+        sim.step(T_STATES + 3); // Fetch the ADD instruction
+        assert.equal(sim.get('ir.OPCODEreg'), 1);
+
+        sim.setSwitch('run', false);
+        sim.press('clear');
+
+        assert.equal(sim.get('ir.OPCODEreg'), 0);
+        assert.equal(sim.get('ir.ADDRreg'), 0);
+    });
+
     it('STEP does nothing while not in run mode', () => {
         const sim = loadSimulator();
 
@@ -78,6 +92,16 @@ describe('run mode, manual stepping', () => {
         sim.step(T_STATES);
         assert.equal(sim.get('pc.cnt'), 2);
         assert.equal(sim.text('PC'), '02');
+    });
+
+    it('the IR puts the operand address on the W bus during T4', () => {
+        const sim = loadSimulator();
+
+        sim.enter(arithmetic(ADD, 1, 2));
+        sim.step(4);
+
+        assert.equal(sim.get('WBUS') & 0x0F, 10);
+        assert.equal(sim.get('ramaddr'), 10);
     });
 
     it('LDA loads RAM into the accumulator', () => {

@@ -398,14 +398,15 @@ const ir = {
     ADDRreg: 0,
     WBUSreg: [0, 0, 0, 0, 0, 0, 0, 0],
     CLRevent: function () {
-        ir.opcodereg = 0;
+        ir.OPCODEreg = 0;
+        ir.ADDRreg   = 0;
     },
     CLKevent: function () {
         if (!nEi) {
             // nEi is not bound to CLK or !CLK, so output the address on request.
             let ADDRbin = dec2bin(ir.ADDRreg, 4);
             let WBUStmp = bin2dec([ir.WBUSreg[0], ir.WBUSreg[1], ir.WBUSreg[2], ir.WBUSreg[3], ADDRbin[0], ADDRbin[1], ADDRbin[2], ADDRbin[3]]);
-            WBUS        = bin2dec(WBUStmp);
+            WBUS        = WBUStmp;
         }
 
         if (CLK) {
