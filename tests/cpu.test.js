@@ -185,6 +185,34 @@ describe('run mode, auto clock', () => {
         assert.equal(sim.get('nHLT'), 1);
     });
 
+    it('HLT stops the clock', () => {
+        const sim = loadSimulator();
+
+        sim.enter(arithmetic(ADD, 1, 2), { auto: true });
+        sim.press('start');
+        sim.clock.advance(60000);
+        sim.run("var clkCount = 0; ee.addEventListener('CLK', () => clkCount++);");
+        sim.clock.advance(10000);
+
+        assert.equal(sim.get('inputreg.start'), 0);
+        assert.equal(sim.get('clkCount'), 0);
+    });
+
+    it('GO runs a new program after a halt', () => {
+        const sim = loadSimulator();
+
+        sim.enter(arithmetic(ADD, 1, 2), { auto: true });
+        sim.press('start');
+        sim.clock.advance(60000);
+
+        sim.enter(arithmetic(SUB, 9, 4), { auto: true });
+        sim.press('start');
+        sim.clock.advance(60000);
+
+        assert.equal(sim.display(), '05');
+        assert.equal(sim.get('nHLT'), 0);
+    });
+
     it('STEP is ignored while in auto mode', () => {
         const sim = loadSimulator();
 
