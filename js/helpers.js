@@ -44,7 +44,7 @@ function dec2bin(dec, bits) {
             let x = bits - bin.length;
 
             for (let j = 0; j < x; j++) {
-                bin.unshift(0);
+                bin.unshift('0');
             }
         }
     }
