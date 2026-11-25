@@ -1,6 +1,6 @@
 # SAP-1-CPU
 
-[![Deploy to GitHub Pages](https://github.com/ellisgl/SAP-1-CPU/actions/workflows/deploy.yml/badge.svg?branch=release)](https://github.com/ellisgl/SAP-1-CPU/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/ellisgl/SAP-1-CPU/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/ellisgl/SAP-1-CPU/actions/workflows/deploy.yml)
 [![License: BSD-3-Clause](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg)](LICENSE.BSD)
 
 SAP-1 like CPU / Computer Simulator in HTML and JavaScript.
